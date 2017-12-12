@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/gkab/ferrum/issues"
   },
-  "homepage": "https://github.com/gkab/ferrum#readme"
+  "homepage": "https://github.com/gkab/ferrum#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "underscore": "^1.8.3"
+  }
 }
