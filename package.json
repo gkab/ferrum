@@ -18,6 +18,8 @@
   "homepage": "https://github.com/gkab/ferrum#readme",
   "dependencies": {
     "express": "^4.16.2",
+    "git": "^0.1.5",
+    "github": "^13.0.1",
     "underscore": "^1.8.3"
   }
 }
