@@ -1,3 +1,5 @@
+const { NotImplementedMethodCall } = require('./Builtin');
+
 class StudentAccessor
 {
     constructor(studentStorage)
@@ -5,7 +7,13 @@ class StudentAccessor
         this.studentStorage = studentStorage;
     }
     // Stores the result of solution build (success/failure)
-    storeSolutionBuildResult(result) {}
+    storeSolutionBuildResult(result)
+    {
+        NotImplementedMethodCall();
+    }
     // Stores the result of solution test (number of completed tests)
-    storeSolutionTestResult(result) {}
+    storeSolutionTestResult(result)
+    {
+        NotImplementedMethodCall();
+    }
 }

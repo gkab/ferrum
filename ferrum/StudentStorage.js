@@ -1,3 +1,5 @@
+const { NotImplementedMethodCall } = require('./Builtin');
+
 /*
     StudentStorage
 
@@ -6,13 +8,25 @@
 */
 class StudentStorage
 {
-    constructor() {}
+    constructor()
+    {
+        NotImplementedMethodCall();
+    }
     // Loads database
-    load() {}
+    load()
+    {
+        NotImplementedMethodCall();
+    }
     // Unloads database
-    unload() {}
+    unload()
+    {
+        NotImplementedMethodCall();
+    }
     // Returns a StudentAccessor
-    getStudent(username) {}
+    getStudent(username)
+    {
+        NotImplementedMethodCall();
+    }
 }
 
 module.exports = StudentStorage;

@@ -1,14 +1,31 @@
+const { NotImplementedMethodCall } = require('./Builtin');
+
 class Solution
 {
-    constructor(repo) {}
+    constructor(repo)
+    {
+        NotImplementedMethodCall();
+    }
     // Check that the fork only modifies a single folder
-    checkDelta() {}
+    checkDelta()
+    {
+        NotImplementedMethodCall();
+    }
     // Download the repo
-    pull() {}
+    pull()
+    {
+        NotImplementedMethodCall();
+    }
     // Parse build.json and make sure it's valid
-    check() {}
+    check()
+    {
+        NotImplementedMethodCall();
+    }
     // Build the solution
-    build() {}
+    build()
+    {
+        NotImplementedMethodCall();
+    }
 }
 
 module.exports = Solution;

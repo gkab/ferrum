@@ -1,10 +1,21 @@
+const { NotImplementedMethodCall } = require('./Builtin');
+
 class Server
 {
-    constructor() {}
+    constructor()
+    {
+        NotImplementedMethodCall();
+    }
     // Request server to process a solution (fork)
-    processSolution(url) {}
+    processSolution(url)
+    {
+        NotImplementedMethodCall();
+    }
     // Return a list of solutions available
-    listSolutions() {}
+    listSolutions()
+    {
+        NotImplementedMethodCall();
+    }
 }
 
 module.exports = Server;
