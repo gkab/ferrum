@@ -2,15 +2,17 @@
     StudentStorage
 
     Manages data of students
-    Backed by SQL database OR JSON file
+    Backed by NeDB
 */
 class StudentStorage
 {
     constructor() {}
-    // Store the fact that student submitted a pull request
-    storePullRequest(username, commit) {}
-    // Store solution result
-    storeSolutionResult(success) {}
+    // Loads database
+    load() {}
+    // Unloads database
+    unload() {}
+    // Returns a StudentAccessor
+    getStudent(username) {}
 }
 
 module.exports = StudentStorage;
