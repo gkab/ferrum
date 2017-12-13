@@ -2,6 +2,7 @@ const Ferrum = require('./Ferrum');
 
 class SolutionBuilder
 {
+    // Can throw
     constructor(path, config)
     {
         this.path = path;
@@ -15,8 +16,8 @@ class SolutionBuilder
 
     build()
     {
+        // Can throw
         let context = Ferrum.languageController.createSolutionContext(this.config.language, this.config.options);
-        context.assertConfigSane(this.config.options);
 
         context.compile()
         context.link();

@@ -9,11 +9,6 @@ class LanguageContextAbstract
         this.options = options;
     }
 
-    // Throws if config is not usable (fields missing, etc)
-    assertConfigSane()
-    {
-        AbstractMethodCall();
-    }
     getStatus()
     {
         AbstractMethodCall();

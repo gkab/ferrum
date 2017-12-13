@@ -8,10 +8,6 @@ class LanguageContextC extends LanguageContextAbstract
         super('C', config, options);
     }
 
-    assertConfigSane()
-    {
-        NotImplementedMethodCall();
-    }
     getStatus()
     {
         NotImplementedMethodCall();

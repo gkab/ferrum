@@ -6,7 +6,7 @@ class LanguageController
     {
         this.languages = {};
 
-        loadLanguageImplementations();
+        this.loadLanguageImplementations();
     }
 
     languageExists(language)
@@ -28,13 +28,15 @@ class LanguageController
         for (let lang in config)
         {
             // Can throw
-            loadLanguageImplementation(lang);
+            this.loadLanguageImplementation(lang);
         }
     }
     // Can throw
     createSolutionContext(language, options)
     {
-        return this.languages[language](config[language])
+        if (!this.languageExists(language))
+            throw new Error(`Unknown language: ${language}`);
+        return this.languages[language](config[language], options)
     }
 }
 

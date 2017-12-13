@@ -6,13 +6,13 @@ class Server
     {
         NotImplementedMethodCall();
     }
-    // Request server to process a solution (fork)
-    processSolution(url)
+    // Return a list of solutions available
+    listSolutions()
     {
         NotImplementedMethodCall();
     }
-    // Return a list of solutions available
-    listSolutions()
+    // Request server to process a solution (fork)
+    processSolution(url)
     {
         NotImplementedMethodCall();
     }
