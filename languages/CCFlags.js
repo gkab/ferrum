@@ -11,7 +11,7 @@ module.exports = {
                 let star = fflag.indexOf('*');
                 if (star > 0)
                 {
-                    if (flag.indexOf(fflag.substr(0, star)) > 0)
+                    if (flag.indexOf(fflag.substr(0, star)) >= 0)
                         throw new Error(`Blacklisted flag ${fflag}`);
                 }
                 else
