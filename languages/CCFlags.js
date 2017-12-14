@@ -1,7 +1,8 @@
 module.exports = {
-    mergeFlags: function mergeFlags(blacklist, flags_default, flags_user)
+    mergeFlags: function mergeFlags(flags_blacklist, flags_default, flags_user)
     {
-        var result = [].concat(flags_default.split(' '));
+        var result = flags_default.split(' ');
+        let blacklist = flags_blacklist.split(' ');
         for (let flag of flags_user.split(' '))
         {
             if (!flag.length)

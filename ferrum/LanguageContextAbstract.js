@@ -2,13 +2,18 @@ const { AbstractMethodCall } = require('./Builtin');
 
 class LanguageContextAbstract
 {
-    constructor(name, config, options)
+    constructor(name, cwd, config, options)
     {
         this.name = name;
+        this.cwd = cwd;
         this.config = config;
         this.options = options;
     }
 
+    cleanup()
+    {
+        AbstractMethodCall();
+    }
     getStatus()
     {
         AbstractMethodCall();
@@ -25,3 +30,5 @@ class LanguageContextAbstract
         AbstractMethodCall();
     }
 }
+
+module.exports = LanguageContextAbstract;

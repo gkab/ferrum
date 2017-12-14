@@ -18,7 +18,7 @@ class LanguageController
     loadLanguageImplementation(language)
     {
         // Can throw
-        const implementation = require('languages/' + language);
+        const implementation = require('../languages/LanguageContext' + language);
         // Can throw
         this.languages[language] = implementation;
     }
@@ -32,11 +32,11 @@ class LanguageController
         }
     }
     // Can throw
-    createSolutionContext(language, options)
+    createSolutionContext(language, cwd, options)
     {
         if (!this.languageExists(language))
             throw new Error(`Unknown language: ${language}`);
-        return this.languages[language](config[language], options)
+        return new this.languages[language](cwd, config[language], options)
     }
 }
 

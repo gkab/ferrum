@@ -1,3 +1,4 @@
+const SolutionBuilder = require('./SolutionBuilder');
 const { NotImplementedMethodCall } = require('./Builtin');
 
 class Solution
@@ -5,6 +6,9 @@ class Solution
     constructor(repo)
     {
         NotImplementedMethodCall();
+
+        this.path = '';
+        this.buildConfig = {};
     }
     // Check that the fork only modifies a single folder
     checkDelta()
@@ -22,9 +26,11 @@ class Solution
         NotImplementedMethodCall();
     }
     // Build the solution
+    // Can throw
     build()
     {
-        NotImplementedMethodCall();
+        let builder = new SolutionBuilder(this.path, this.buildConfig);
+        builder.build();
     }
 }
 

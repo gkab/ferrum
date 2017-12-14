@@ -13,11 +13,11 @@ class SolutionBuilder
             throw new Error(`Language "${config.language}" is not supported`);
         }
     }
-
+    // Can throw
     build()
     {
         // Can throw
-        let context = Ferrum.languageController.createSolutionContext(this.config.language, this.config.options);
+        let context = Ferrum.languageController.createSolutionContext(this.config.language, this.path, this.config.options);
 
         context.compile()
         context.link();
