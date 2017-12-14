@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-float sqrt2()
+float cube(float value)
 {
-    return sqrt(2);
+    return pow(value, 3.0);
 }

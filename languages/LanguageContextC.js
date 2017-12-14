@@ -2,7 +2,7 @@ const LanguageContextAbstract = require('../ferrum/LanguageContextAbstract.js');
 const { NotImplementedMethodCall } = require('../ferrum/Builtin');
 const { mergeFlags } = require('./CCFlags');
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const os = require('os');
 const path = require('path');
 const Promise = require('promise');
@@ -43,7 +43,7 @@ class LanguageContextC extends LanguageContextAbstract
     cleanup()
     {
         if (this.objectPath)
-            fs.rmdirSync(this.objectPath);
+            fs.removeSync(this.objectPath);
     }
     getStatus()
     {
@@ -106,7 +106,7 @@ class LanguageContextC extends LanguageContextAbstract
     async link()
     {
         return new Promise((resolve, reject) => {
-            let cc = child_process.spawn(this.config.ld, this.lflags.concat(this.objects), {
+            let cc = child_process.spawn(this.config.ld, this.objects.concat(this.lflags), {
                 cwd: this.objectPath
             });
             // TODO redirect to log files

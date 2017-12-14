@@ -1,13 +1,14 @@
 const LanguageController = require('../ferrum/LanguageController');
 
+let lc = new LanguageController();
+let cc = lc.createSolutionContext('C', 'TestSolution', {
+    sources: [ 'fun.c', 'hello.c' ],
+    cflags: '-DDEBUG=1',
+    lflags: '-lm'
+});
+
 async function test()
 {
-    let lc = new LanguageController();
-    let cc = lc.createSolutionContext('C', 'TestSolution', {
-        sources: [ 'fun.c', 'hello.c' ],
-        cflags: '',
-        lflags: ''
-    });
     console.log('CContext:', cc);
     await cc.compile();
     await cc.link();
@@ -17,11 +18,20 @@ process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
 
-try
+async function main()
 {
-    test();
+    try
+    {
+        await test();
+    }
+    catch (error)
+    {
+        console.log(error);
+    }
+    finally
+    {
+        cc.cleanup();
+    }
 }
-catch (error)
-{
-    console.log(error);
-}
+
+main();

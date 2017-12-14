@@ -1,0 +1,7 @@
+{
+    "format-version": "2",
+    "lang": "C",
+    "files": [ "hello.c", "fun.c" ],
+    "cflags": [ "-DDEBUG=1" ],
+    "lflags": [ "-lm" ]
+}

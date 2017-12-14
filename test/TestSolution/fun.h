@@ -1,3 +1,3 @@
 #pragma once
 
-float sqrt2();
+float cube(float value);
