@@ -1,26 +1,37 @@
 const LanguageContextAbstract = require('../ferrum/LanguageContextAbstract.js');
 const { NotImplementedMethodCall } = require('../ferrum/Builtin');
-const { mergeFlags } = require('./CCFlags');
+const { mergeFlags } = require('./CCHelper');
 
 const fs = require('fs-extra');
 const os = require('os');
 const path = require('path');
 const Promise = require('promise');
 const randomstring = require('randomstring');
+const tassert = require('assert-types');
 const child_process = require('child_process');
 
 class LanguageContextC extends LanguageContextAbstract
 {
-    constructor(cwd, config, options)
+    constructor(cwd, config)
     {
-        super('C', cwd, config, options);
+        super('C', cwd, config);
 
-        this.objectPath = path.join(os.tmpdir(), `ferrum-${Date.now()}`);
-        fs.mkdirSync(this.objectPath);
-        this.sources = this.parseSources(options.sources);
-        this.cflags = mergeFlags(config.cflags_blacklist, config.cflags, options.cflags).filter(n => n.length);
-        this.lflags = mergeFlags(config.lflags_blacklist, config.lflags, options.lflags).filter(n => n.length);
         this.objects = [];
+        let tmppath = path.join(os.tmpdir(), `ferrum-${Date.now()}`);
+        fs.mkdirSync(tmppath);
+        // If fs.mkdirSync fails, we won't reach this statement
+        // Meaning that cleanup() won't try to delete anything
+        this.objectPath = tmppath;
+    }
+    applyBuildOptions(options)
+    {
+        tassert.array(options.files);
+        tassert.array(options.cflags);
+        tassert.array(options.lflags);
+
+        this.sources = this.parseSources(options.files);
+        this.cflags = mergeFlags(this.config.cflagsBlacklist, this.config.cflagsDefault, options.cflags);
+        this.lflags = mergeFlags(this.config.lflagsBlacklist, this.config.lflagsDefault, options.lflags);
     }
     parseSources(sources)
     {

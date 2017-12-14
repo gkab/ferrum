@@ -1,6 +1,6 @@
 const LanguageContextAbstract = require('../ferrum/LanguageContextAbstract.js');
 const { NotImplementedMethodCall } = require('../ferrum/Builtin');
-const { mergeFlags } = require('./CCFlags');
+const { mergeFlags } = require('./CCHelper');
 
 const fs = require('fs');
 const os = require('os');

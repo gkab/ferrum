@@ -2,17 +2,17 @@ module.exports = {
     C: {
         cc: 'gcc',
         ld: 'gcc',
-        cflags: '--std=c89 -Wall -Werror',
-        cflags_blacklist: '-w -Wno-* --std=* -fpermissive -o',
-        lflags: '',
-        lflags_blacklist: '-o'
+        cflagsDefault: [ '-Wall', '-Werror', '--std=c89' ],
+        cflagsBlacklist: [ '-w', '-Wno-*', '-fpermissive', '-o', '--std=*' ],
+        lflagsDefault: [],
+        lflagsBlacklist: [ '-o' ]
     },
     CXX: {
         cc: 'g++',
         ld: 'g++',
-        cflags: '-Wall -Werror',
-        cflags_blacklist: '-w -Wno-* -fpermissive -o',
-        lflags: '',
-        lflags_blacklist: '-o'
+        cflagsDefault: [ '-Wall', '-Werror' ],
+        cflagsBlacklist: [ '-w', '-Wno-*', '-fpermissive', '-o' ],
+        lflagsDefault: [],
+        lflagsBlacklist: [ '-o' ]
     }
 }

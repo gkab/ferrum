@@ -2,14 +2,12 @@ const { AbstractMethodCall } = require('./Builtin');
 
 class LanguageContextAbstract
 {
-    constructor(name, cwd, config, options)
+    constructor(name, cwd, config)
     {
         this.name = name;
         this.cwd = cwd;
         this.config = config;
-        this.options = options;
     }
-
     cleanup()
     {
         AbstractMethodCall();
@@ -18,14 +16,18 @@ class LanguageContextAbstract
     {
         AbstractMethodCall();
     }
-    // Make these methods async?
+    // Throws if options are malformed
+    applyBuildOptions(config)
+    {
+        AbstractMethodCall();
+    }
     // Throws if compilation fails
-    compile()
+    async compile()
     {
         AbstractMethodCall();
     }
     // Throws if linking fails
-    link()
+    async link()
     {
         AbstractMethodCall();
     }

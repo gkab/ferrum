@@ -32,11 +32,11 @@ class LanguageController
         }
     }
     // Can throw
-    createSolutionContext(language, cwd, options)
+    createSolutionContext(language, cwd)
     {
         if (!this.languageExists(language))
             throw new Error(`Unknown language: ${language}`);
-        return new this.languages[language](cwd, config[language], options)
+        return new this.languages[language](cwd, config[language])
     }
 }
 

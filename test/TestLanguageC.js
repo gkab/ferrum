@@ -1,10 +1,11 @@
 const LanguageController = require('../ferrum/LanguageController');
 
 let lc = new LanguageController();
-let cc = lc.createSolutionContext('C', 'TestSolution', {
-    sources: [ 'fun.c', 'hello.c' ],
-    cflags: '-DDEBUG=1',
-    lflags: '-lm'
+let cc = lc.createSolutionContext('C', 'TestSolution');
+cc.applyBuildOptions({
+    files: [ 'fun.c', 'hello.c' ],
+    cflags: [ '-DDEBUG=1' ],
+    lflags: [ '-lm' ]
 });
 
 async function test()
