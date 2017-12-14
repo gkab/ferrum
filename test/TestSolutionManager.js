@@ -1,6 +1,6 @@
-const SolutionManager = require('../ferrum/SolutionManager');
+const Ferrum = require('../ferrum/Ferrum');
 
-let sm = new SolutionManager();
+let sm = Ferrum.solutionManager;
 
 async function test()
 {

@@ -1,5 +1,9 @@
-module.exports = {
-    // server: new (require('./Server'))(),
-    languageController: new (require('./LanguageController'))(),
-    // studentStorage: new (require('./StudentStorage'))()
-}
+let Ferrum = {
+    languageController: null,
+    solutionManager: null
+};
+
+module.exports = Ferrum;
+
+Ferrum.languageController = new (require('./LanguageController'))();
+Ferrum.solutionManager = new (require('./SolutionManager'))();

@@ -1,4 +1,5 @@
 const SolutionBuilder = require('./SolutionBuilder');
+const Solution = require('./Solution');
 
 const { NotImplementedMethodCall } = require('./Builtin');
 const { diffGenerate } = require('./DiffHelper');
@@ -33,6 +34,7 @@ class SolutionManager
         this.studentPath = path.join(this.tmpdir, 'student');
         fs.mkdirSync(this.studentPath);
     }
+
     async setupMasterRepo(url)
     {
         let cwd = process.cwd();
@@ -42,18 +44,11 @@ class SolutionManager
     {
         try
         {
-            // Clones a repo from https://github.com/${username}/${reponame}
-            let repo = path.join(this.studentPath, username);
-            await git(`clone https://github.com/${username}/${reponame} ${repo}`);
-            // Compares it with the master repo (only changed folder MUST be user's own folder)
-            let diff = diffGenerate(this.masterPath, repo);
-            if (diff.affectedRoot === '')
-                throw new Error('Root directory must not be changed');
-            // TODO check if folder belongs to user
-            let solutionPath = path.join(repo, diff.affectedRoot);
-            let config = fs.readJsonSync(path.join(solutionPath, 'build.json'));
-            let sb = new SolutionBuilder(solutionPath, config);
-            await sb.build();
+            let solution = new Solution(username, reponame);
+            await solution.download();
+            solution.checkDelta();
+            solution.initSolutionBuilder();
+            await solution.build();
         }
         catch (e)
         {
