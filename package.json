@@ -26,6 +26,7 @@
     "nedb": "^1.8.0",
     "promise": "^8.0.1",
     "randomstring": "^1.1.5",
+    "sha1-file": "^1.0.0",
     "underscore": "^1.8.3",
     "winston": "^2.4.0"
   }
