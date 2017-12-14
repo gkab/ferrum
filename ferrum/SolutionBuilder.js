@@ -12,6 +12,8 @@ class SolutionBuilder
         {
             throw new Error(`Language "${config.lang}" is not supported`);
         }
+
+        this.context = null;
     }
     // Can throw
     async build()
@@ -24,14 +26,16 @@ class SolutionBuilder
             context.applyBuildOptions(this.config);
             await context.compile()
             await context.link();
-            context.cleanup();
         }
         catch (error)
         {
-            if (context)
-                context.cleanup();
             throw error;
         }
+    }
+    cleanup()
+    {
+        if (this.context)
+            this.context.cleanup();
     }
 }
 

@@ -14,7 +14,7 @@ class DiffHelper
             for (let file of files)
             {
                 if (path.basename(file) == '.git')
-                    return;
+                    continue;
 
                 file = path.join(folder, file);
 
@@ -35,9 +35,10 @@ class DiffHelper
     }
     static diffGenerate(path1, path2)
     {
+        console.log('calculating diff between', path1, 'and', path2);
         let list1 = DiffHelper.listGenerate(path1);
         let list2 = DiffHelper.listGenerate(path2);
-
+        console.log(list1, list2);
         let diff = {
             added: [],
             removed: [],
@@ -56,6 +57,20 @@ class DiffHelper
             if (!list1[name])
                 diff.added.push(name);
         }
+
+        function sharedStart(array) {
+            if (array.length === 0)
+                return '';
+            let A = array.concat().sort(),
+                a1 = A[0],
+                a2 = A[A.length - 1],
+                L = a1.length,
+                i = 0;
+            while (i < L && a1.charAt(i) === a2.charAt(i)) i++;
+            return a1.substring(0, i);
+        }
+
+        diff.affectedRoot = sharedStart([].concat(diff.added, diff.removed, diff.changed));
 
         return diff;
     }
