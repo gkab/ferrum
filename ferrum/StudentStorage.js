@@ -1,5 +1,8 @@
 const { NotImplementedMethodCall } = require('./Builtin');
 
+const Datastore = require('nedb');
+const Promise = require('promise');
+
 /*
     StudentStorage
 
@@ -10,22 +13,25 @@ class StudentStorage
 {
     constructor()
     {
-        NotImplementedMethodCall();
+        this.students = new Datastore({ filename: 'data/students.db', autoload: true });
+        this.students.ensureIndex({ fieldName: 'username', unique: true })
     }
-    // Loads database
-    load()
+    async studentExists(username)
     {
-        NotImplementedMethodCall();
-    }
-    // Unloads database
-    unload()
-    {
-        NotImplementedMethodCall();
+        return new Promise((resolve, reject) => {
+            this.students.find({ username: username }, (err, docs) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(docs.length);
+            })
+        });
     }
     // Returns a StudentAccessor
-    getStudent(username)
+    async getStudent(username)
     {
-        NotImplementedMethodCall();
+        // TODO
+        return new StudentAccessor()
     }
 }
 
