@@ -40,7 +40,7 @@ class SolutionManager
         let cwd = process.cwd();
         await git(`clone ${url} ${this.masterPath}`);
     }
-    async processStudentSolution(username, reponame)
+    async processStudentSolution(username, reponame, streamStdout, streamStderr)
     {
         try
         {
@@ -48,7 +48,7 @@ class SolutionManager
             await solution.download();
             solution.checkDelta();
             solution.initSolutionBuilder();
-            await solution.build();
+            await solution.build(streamStdout, streamStderr);
         }
         catch (e)
         {

@@ -17,7 +17,7 @@ class LanguageContextAbstract
         AbstractMethodCall();
     }
     // Throws if options are malformed
-    applyBuildOptions(config)
+    applyBuildOptions(config, streamStdout, streamStderr)
     {
         AbstractMethodCall();
     }

@@ -23,11 +23,14 @@ class LanguageContextC extends LanguageContextAbstract
         // Meaning that cleanup() won't try to delete anything
         this.objectPath = tmppath;
     }
-    applyBuildOptions(options)
+    applyBuildOptions(options, streamStdout, streamStderr)
     {
         tassert.array(options.files);
         tassert.array(options.cflags);
         tassert.array(options.lflags);
+
+        this.streamStdout = streamStdout;
+        this.streamStderr = streamStderr;
 
         this.sources = this.parseSources(options.files);
         this.cflags = mergeFlags(this.config.cflagsBlacklist, this.config.cflagsDefault, options.cflags);
@@ -66,12 +69,8 @@ class LanguageContextC extends LanguageContextAbstract
             let object = this.getObjectPath(source);
             let cc = child_process.spawn(this.config.cc, this.cflags.concat([source, '-c', '-o', object]));
             // TODO redirect to log files
-            cc.stdout.on('data', (data) => {
-                console.log('stdout: ', data.toString());
-            });
-            cc.stderr.on('data', (data) => {
-                console.error('stderr: ', data.toString());
-            });
+            cc.stdout.pipe(this.streamStdout);
+            cc.stderr.pipe(this.streamStderr);
             let exited = false;
             cc.on('exit', (code) => {
                 if (!exited)
@@ -121,12 +120,8 @@ class LanguageContextC extends LanguageContextAbstract
                 cwd: this.objectPath
             });
             // TODO redirect to log files
-            cc.stdout.on('data', (data) => {
-                console.log('stdout: ', data.toString());
-            });
-            cc.stderr.on('data', (data) => {
-                console.error('stderr: ', data.toString());
-            });
+            cc.stdout.pipe(this.streamStdout);
+            cc.stderr.pipe(this.streamStderr);
             let exited = false;
             cc.on('exit', (code) => {
                 if (!exited)

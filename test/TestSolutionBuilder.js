@@ -7,7 +7,7 @@ let sb = new SolutionBuilder('TestSolution', config);
 
 async function test()
 {
-    await sb.build();
+    await sb.build(process.stdout, process.stderr);
 }
 
 process.on('unhandledRejection', (reason, p) => {

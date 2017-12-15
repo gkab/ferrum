@@ -32,7 +32,7 @@ module.exports = (app) =>
     app.use(bodyparser.urlencoded({ extended: true }));
 
     app.post('/student/:name', wrapAsyncMethod(async (req, res, next) => {
-
+        
     }));
     app.delete('/student/:name', wrapAsyncMethod(async (req, res, next) => {
 

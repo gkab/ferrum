@@ -16,14 +16,14 @@ class SolutionBuilder
         this.context = null;
     }
     // Can throw
-    async build()
+    async build(streamStdout, streamStderr)
     {
         // Every function here can throw
         let context = null;
         try
         {
             context = Ferrum.languageController.createSolutionContext(this.config.lang, this.path);
-            context.applyBuildOptions(this.config);
+            context.applyBuildOptions(this.config, streamStdout, streamStderr);
             await context.compile()
             await context.link();
         }

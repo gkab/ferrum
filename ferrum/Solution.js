@@ -59,9 +59,9 @@ class Solution
         this.builder = new SolutionBuilder(this.solutionPath, this.buildConfig);
     }
     // Can throw
-    async build()
+    async build(streamStdout, streamStderr)
     {
-        await this.builder.build();
+        await this.builder.build(streamStdout, streamStderr);
     }
 }
 

@@ -5,7 +5,7 @@ let sm = Ferrum.solutionManager;
 async function test()
 {
     await sm.setupMasterRepo('https://github.com/gkab/ferrum-testing');
-    await sm.processStudentSolution('ferrum-test-student', 'ferrum-testing');
+    await sm.processStudentSolution('ferrum-test-student', 'ferrum-testing', process.stdout, process.stderr);
 }
 
 process.on('unhandledRejection', (reason, p) => {
