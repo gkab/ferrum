@@ -16,6 +16,10 @@ class StudentStorage
         this.students = new Datastore({ filename: 'data/students.db', autoload: true });
         this.students.ensureIndex({ fieldName: 'username', unique: true })
     }
+    async createStudent(username)
+    {
+        
+    }
     async studentExists(username)
     {
         return new Promise((resolve, reject) => {
