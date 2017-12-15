@@ -16,9 +16,9 @@ class StudentStorage
         this.students = new Datastore({ filename: 'data/students.db', autoload: true });
         this.students.ensureIndex({ fieldName: 'username', unique: true })
     }
-    async createStudent(username)
+    async createStudent(username, workingDirectory)
     {
-        
+
     }
     async studentExists(username)
     {
@@ -35,7 +35,7 @@ class StudentStorage
     async getStudent(username)
     {
         // TODO
-        return new StudentAccessor()
+        return new StudentAccessor(this, username);
     }
 }
 
