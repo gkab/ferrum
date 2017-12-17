@@ -1,38 +1,37 @@
 const { NotImplementedMethodCall } = require('./Builtin');
 
-const Datastore = require('nedb');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 const Promise = require('promise');
 
 /*
     StudentStorage
 
     Manages data of students
-    Backed by NeDB
 */
 class StudentStorage
 {
     constructor()
     {
-        this.students = new Datastore({ filename: 'data/students.db', autoload: true });
-        this.students.ensureIndex({ fieldName: 'username', unique: true })
-    }
-    async createStudent(username, workingDirectory)
+        let adapter = new FileSync('data/students.json');
+        this.students = low(adapter);
+        this.students.defaults({ students: [] }).write();
+     }
+    createStudent(username, workingDirectory)
     {
-
+        if (this.studentExists(username))
+            throw new Error('Student already exists');
+        this.students.get('students').push({
+            username: username,
+            workingDirectory: workingDirectory
+        }).write();
     }
-    async studentExists(username)
+    studentExists(username)
     {
-        return new Promise((resolve, reject) => {
-            this.students.find({ username: username }, (err, docs) => {
-                if (err)
-                    reject(err);
-                else
-                    resolve(docs.length);
-            })
-        });
+        return this.students.get('students').find({ username: username }).value();
     }
     // Returns a StudentAccessor
-    async getStudent(username)
+    getStudent(username)
     {
         // TODO
         return new StudentAccessor(this, username);
