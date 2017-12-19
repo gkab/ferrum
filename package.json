@@ -18,10 +18,12 @@
   "homepage": "https://github.com/gkab/ferrum#readme",
   "dependencies": {
     "assert-types": "^0.2.1",
+    "async-middleware": "^1.2.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "fs-extra": "^5.0.0",
     "git-promise": "^0.3.1",
+    "github": "^13.0.1",
     "lowdb": "^1.0.0",
     "promise": "^8.0.1",
     "randomstring": "^1.1.5",

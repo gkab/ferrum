@@ -1,5 +1,6 @@
 const SolutionBuilder = require('./SolutionBuilder');
 const Ferrum = require('./Ferrum');
+const config = require('../config/config.js')
 
 const { NotImplementedMethodCall } = require('./Builtin');
 const { diffGenerate } = require('./DiffHelper');
@@ -12,9 +13,12 @@ const path = require('path');
 class Solution
 {
     // Can throw
-    constructor(username, reponame)
+    constructor(manager, pullRequestNumber)
     {
-        this.path = path.join(Ferrum.solutionManager.studentPath, username);
+        this.manager = manager;
+        this.pullRequestNumber = pullRequestNumber;
+
+        this.path = path.join(manager.tmpdir, pullRequestNumber);
         this.username = username;
         this.reponame = reponame;
         // Can throw (student is not registered)
@@ -30,6 +34,19 @@ class Solution
 
         this.buildConfig = null;
         this.builder = null;
+    }
+    async fetchInformation()
+    {
+        this.pullRequest = await Ferrum.github.pullRequests.get({
+            owner: config.githubRepoOwner,
+            repo: this.manager.repo,
+            number: this.pullRequestNumber
+        });
+
+        this.info = {
+            username: this.pullRequest.user.login,
+            reponame: this.pullRequest.head.repo.name
+        };
     }
     async download()
     {

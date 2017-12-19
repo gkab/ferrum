@@ -19,32 +19,25 @@ const path = require('path');
 
 class SolutionManager
 {
-    constructor()
+    constructor(taskID)
     {
-        this.tmpdir = path.join(os.tmpdir(), 'ferrum-git');
+        this.taskID = taskID;
+
+        this.tmpdir = path.join(os.tmpdir(), 'ferrum-solutions', taskID);
         // Clean up
         try
         {
             fs.removeSync(this.tmpdir);
         }
         catch (error) {}
+
         fs.mkdirSync(this.tmpdir);
-
-        this.masterPath = path.join(this.tmpdir, 'master');
-        this.studentPath = path.join(this.tmpdir, 'student');
-        fs.mkdirSync(this.studentPath);
     }
-
-    async setupMasterRepo(url)
-    {
-        let cwd = process.cwd();
-        await git(`clone ${url} ${this.masterPath}`);
-    }
-    async processStudentSolution(username, reponame, streamStdout, streamStderr)
+    async processStudentSolution(pullRequestID, streamStdout, streamStderr)
     {
         try
         {
-            let solution = new Solution(username, reponame);
+            let solution = new Solution(this, pullRequestID);
             await solution.download();
             solution.checkDelta();
             solution.initSolutionBuilder();
