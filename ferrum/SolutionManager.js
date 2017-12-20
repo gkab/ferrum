@@ -38,6 +38,8 @@ class SolutionManager
         try
         {
             let solution = new Solution(this, pullRequestID);
+            await solution.fetchInformation();
+            solution.prepareBuildingDirectory();
             await solution.download();
             solution.checkDelta();
             solution.initSolutionBuilder();

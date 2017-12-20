@@ -9,6 +9,8 @@ const os = require('os');
 const fs = require('fs-extra');
 const git = require('git-promise');
 const path = require('path');
+const Promise = require('promise');
+const common_prefix = require('common-prefix');
 
 class Solution
 {
@@ -18,19 +20,11 @@ class Solution
         this.manager = manager;
         this.pullRequestNumber = pullRequestNumber;
 
-        this.path = path.join(manager.tmpdir, pullRequestNumber);
         this.username = username;
         this.reponame = reponame;
         // Can throw (student is not registered)
         // this.studentDirectory = Ferrum.studentStorage.getStudent(username).workingDirectory;
         this.studentDirectory = 'FerrumStudent';
-        this.solutionPath = path.join(this.path, this.studentDirectory);
-
-        try
-        {
-            fs.removeSync(this.path);
-        }
-        catch (error) {}
 
         this.buildConfig = null;
         this.builder = null;
@@ -42,27 +36,40 @@ class Solution
             repo: this.manager.repo,
             number: this.pullRequestNumber
         });
-
+        this.mergeCommit = await Ferrum.github.repos.getCommit({
+            owner: config.githubRepoOwner,
+            repo: this.manager.repo,
+            sha: this.pullRequest.merge_commit_sha
+        });
         this.info = {
             username: this.pullRequest.user.login,
             reponame: this.pullRequest.head.repo.name
         };
     }
-    async download()
+    prepareBuildingDirectory()
     {
-        await git(`clone https://github.com/${this.username}/${this.reponame} ${this.path}`);
+        this.path = path.join(this.manager.tmpdir, this.mergeCommit.sha.substr(12));
+        if (fs.existsSync(this.path))
+            fs.removeSync(this.path);
+        fs.mkdirSync(this.path);
+        this.solutionPath = path.join(this.path, this.studentDirectory);
+    }
+    // Returns a Promise
+    /* async */ download()
+    {
+        return new Promise((resolve, reject) => {
+
+        });
     }
     // Compares it with the master repo (only changed folder MUST be user's own folder)
+    // Will throw if it's not true
     checkDelta()
     {
-        let diff = diffGenerate(Ferrum.solutionManager.masterPath, this.path);
-        if (diff.affectedRoot === '')
-            throw new Error('Root directory must not be changed');
-        /*
-        let ownWD = ;
-        if (diff.affectedRoot !== ownWD)
-            throw new Error(`Root directory must belong to user (${ownWD})`);
-        */
+        for (let file of this.mergeCommit.files)
+        {
+            if (file.indexOf(this.studentDirectory + '/') !== 0)
+                throw new Error(`You can't modify files outside ${this.studentDirectory}/`);
+        }
     }
     // Parse build.json and make sure it's valid, create builder
     // Can throw
