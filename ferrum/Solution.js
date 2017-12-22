@@ -7,7 +7,6 @@ const { diffGenerate } = require('./DiffHelper');
 
 const os = require('os');
 const fs = require('fs-extra');
-const git = require('git-promise');
 const path = require('path');
 const Promise = require('promise');
 const common_prefix = require('common-prefix');
@@ -58,6 +57,20 @@ class Solution
     /* async */ download()
     {
         return new Promise((resolve, reject) => {
+            let git_clone = child_process.spawn('git', ['clone', this.pullRequest.head.repo.git_url, this.solutionPath])
+            let resolved = false;
+            git_clone.on('exit', (code) => {
+                if (resolved)
+                    return;
+                resolve();
+                resolved = true;
+            });
+            git_clone.on('error', (error) => {
+                if (resolved)
+                    return;
+                reject();
+                resolved = true;
+            });
 
         });
     }

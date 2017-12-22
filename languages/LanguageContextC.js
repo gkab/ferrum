@@ -63,37 +63,14 @@ class LanguageContextC extends LanguageContextAbstract
     {
         NotImplementedMethodCall();
     }
-    compileSource(source)
+    async compileSource(source)
     {
-        return new Promise((resolve, reject) => {
-            let object = this.getObjectPath(source);
-            let cc = child_process.spawn(this.config.cc, this.cflags.concat([source, '-c', '-o', object]));
-            // TODO redirect to log files
-            cc.stdout.pipe(this.streamStdout);
-            cc.stderr.pipe(this.streamStderr);
-            let exited = false;
-            cc.on('exit', (code) => {
-                if (!exited)
-                {
-                    if (code == 0)
-                    {
-                        resolve(object);
-                    }
-                    else
-                    {
-                        reject(new Error(`Compiler ${this.config.cc} exited with code ${code}`));
-                    }
-                }
-                exited = true;
-            });
-            cc.on('error', (error) => {
-                if (!exited)
-                {
-                    reject(new Error(`Compiler ${this.config.cc} emitted error: ${error}`));
-                }
-                exited = true;
-            });
-        });
+        let status = await asyncSpawn(this.config.cc, this.cflags.concat([source, '-c', '-o', object]), {
+            cwd: this.objectPath
+        }, this.streamStdout, this.streamStderr);
+
+        if (status != 0)
+            throw new Error(`Compiler ${this.config.cc} exited with code ${status}`);
     }
     async compile()
     {
@@ -115,36 +92,12 @@ class LanguageContextC extends LanguageContextAbstract
     }
     async link()
     {
-        return new Promise((resolve, reject) => {
-            let cc = child_process.spawn(this.config.ld, this.objects.concat(this.lflags), {
-                cwd: this.objectPath
-            });
-            // TODO redirect to log files
-            cc.stdout.pipe(this.streamStdout);
-            cc.stderr.pipe(this.streamStderr);
-            let exited = false;
-            cc.on('exit', (code) => {
-                if (!exited)
-                {
-                    if (code == 0)
-                    {
-                        resolve();
-                    }
-                    else
-                    {
-                        reject(new Error(`Linker ${this.config.ld} exited with code ${code}`));
-                    }
-                }
-                exited = true;
-            });
-            cc.on('error', (error) => {
-                if (!exited)
-                {
-                    reject(new Error(`Linker ${this.config.ld} emitted error: ${error}`));
-                }
-                exited = true;
-            });
-        });
+        let status = await asyncSpawn(this.config.ld, this.objects.concat(this.lflags), {
+            cwd: this.objectPath
+        }, this.streamStdout, this.streamStderr);
+
+        if (status != 0)
+            throw new Error(`Linker ${this.config.ld} exited with code ${status}`);
     }
 }
 
