@@ -1,6 +1,7 @@
 const LanguageContextAbstract = require('../ferrum/LanguageContextAbstract.js');
 const { NotImplementedMethodCall } = require('../ferrum/Builtin');
 const { mergeFlags } = require('./CCHelper');
+const { asyncSpawn } = require('../ferrum/ProcessPromise');
 
 const fs = require('fs-extra');
 const os = require('os');
@@ -17,11 +18,6 @@ class LanguageContextC extends LanguageContextAbstract
         super('C', cwd, config);
 
         this.objects = [];
-        let tmppath = path.join(os.tmpdir(), `ferrum-${Date.now()}`);
-        fs.mkdirSync(tmppath);
-        // If fs.mkdirSync fails, we won't reach this statement
-        // Meaning that cleanup() won't try to delete anything
-        this.objectPath = tmppath;
     }
     applyBuildOptions(options, streamStdout, streamStderr)
     {
@@ -35,6 +31,9 @@ class LanguageContextC extends LanguageContextAbstract
         this.sources = this.parseSources(options.files);
         this.cflags = mergeFlags(this.config.cflagsBlacklist, this.config.cflagsDefault, options.cflags);
         this.lflags = mergeFlags(this.config.lflagsBlacklist, this.config.lflagsDefault, options.lflags);
+
+        this.buildPath = path.join(os.tmpdir(), 'ferrum-build', '' + Date.now());
+        fs.emptyDirSync(this.buildPath);
     }
     parseSources(sources)
     {
@@ -52,12 +51,12 @@ class LanguageContextC extends LanguageContextAbstract
     }
     getObjectPath(source)
     {
-        return path.join(this.objectPath, path.basename(source, '.c')) + '.o';
+        return path.join(this.buildPath, path.basename(source, '.c')) + '.o';
     }
     cleanup()
     {
-        if (this.objectPath)
-            fs.removeSync(this.objectPath);
+        if (this.buildPath)
+            fs.removeSync(this.buildPath);
     }
     getStatus()
     {
@@ -65,12 +64,16 @@ class LanguageContextC extends LanguageContextAbstract
     }
     async compileSource(source)
     {
+        let object = this.getObjectPath(source);
+
         let status = await asyncSpawn(this.config.cc, this.cflags.concat([source, '-c', '-o', object]), {
-            cwd: this.objectPath
+            cwd: this.buildPath
         }, this.streamStdout, this.streamStderr);
 
         if (status != 0)
             throw new Error(`Compiler ${this.config.cc} exited with code ${status}`);
+
+        return object;
     }
     async compile()
     {
@@ -93,7 +96,7 @@ class LanguageContextC extends LanguageContextAbstract
     async link()
     {
         let status = await asyncSpawn(this.config.ld, this.objects.concat(this.lflags), {
-            cwd: this.objectPath
+            cwd: this.buildPath
         }, this.streamStdout, this.streamStderr);
 
         if (status != 0)

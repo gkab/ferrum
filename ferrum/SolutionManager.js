@@ -4,6 +4,7 @@ const Solution = require('./Solution');
 const { NotImplementedMethodCall } = require('./Builtin');
 const { diffGenerate } = require('./DiffHelper');
 const config = require('../config/config');
+const { asyncSpawn } = require('./ProcessPromise');
 
 const fs = require('fs-extra');
 const os = require('os');
@@ -19,19 +20,21 @@ const path = require('path');
 
 class SolutionManager
 {
-    constructor(taskID)
+    constructor(taskID, repo)
     {
-        this.taskID = taskID;
+        this.taskID = '' + taskID;
 
-        this.tmpdir = path.join(os.tmpdir(), 'ferrum-solutions', taskID);
-        // Clean up
-        try
-        {
-            fs.removeSync(this.tmpdir);
-        }
-        catch (error) {}
+        this.tmpdir = path.join(os.tmpdir(), 'ferrum-solutions', this.taskID);
 
-        fs.mkdirSync(this.tmpdir);
+        fs.emptyDirSync(this.tmpdir);
+
+        this.repo = repo;
+    }
+    async init()
+    {
+        let status = await asyncSpawn('git', ['clone', `https://github.com/${config.githubRepoOwner}/${this.repo}`, this.tmpdir]);
+        if (status != 0)
+            throw new Error(`git exited with status ${status}`);
     }
     async processStudentSolution(pullRequestID, streamStdout, streamStderr)
     {
@@ -39,7 +42,6 @@ class SolutionManager
         {
             let solution = new Solution(this, pullRequestID);
             await solution.fetchInformation();
-            solution.prepareBuildingDirectory();
             await solution.download();
             solution.checkDelta();
             solution.initSolutionBuilder();

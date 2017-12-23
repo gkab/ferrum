@@ -1,11 +1,11 @@
-const Ferrum = require('../ferrum/Ferrum');
+const SolutionManager = require('../ferrum/SolutionManager')
 
-let sm = Ferrum.solutionManager;
+let sm = new SolutionManager(0, 'ferrum-testing');
 
 async function test()
 {
-    await sm.setupMasterRepo('https://github.com/gkab/ferrum-testing');
-    await sm.processStudentSolution('ferrum-test-student', 'ferrum-testing', process.stdout, process.stderr);
+    await sm.init();
+    await sm.processStudentSolution(1, process.stdout, process.stderr);
 }
 
 process.on('unhandledRejection', (reason, p) => {

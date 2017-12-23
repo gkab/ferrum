@@ -4,6 +4,7 @@ const config = require('../config/config.js')
 
 const { NotImplementedMethodCall } = require('./Builtin');
 const { diffGenerate } = require('./DiffHelper');
+const { asyncSpawn } = require('./ProcessPromise');
 
 const os = require('os');
 const fs = require('fs-extra');
@@ -19,11 +20,10 @@ class Solution
         this.manager = manager;
         this.pullRequestNumber = pullRequestNumber;
 
-        this.username = username;
-        this.reponame = reponame;
         // Can throw (student is not registered)
         // this.studentDirectory = Ferrum.studentStorage.getStudent(username).workingDirectory;
         this.studentDirectory = 'FerrumStudent';
+        this.solutionPath = path.join(this.manager.tmpdir, this.studentDirectory);
 
         this.buildConfig = null;
         this.builder = null;
@@ -35,52 +35,44 @@ class Solution
             repo: this.manager.repo,
             number: this.pullRequestNumber
         });
+
+        if (!this.pullRequest.data.merge_commit_sha)
+            throw new Error(`no merge commit for pull request ${this.pullRequestNumber}`);
+
         this.mergeCommit = await Ferrum.github.repos.getCommit({
             owner: config.githubRepoOwner,
             repo: this.manager.repo,
-            sha: this.pullRequest.merge_commit_sha
+            sha: this.pullRequest.data.merge_commit_sha
         });
         this.info = {
-            username: this.pullRequest.user.login,
-            reponame: this.pullRequest.head.repo.name
+            username: this.pullRequest.data.user.login,
+            reponame: this.pullRequest.data.head.repo.name
         };
     }
-    prepareBuildingDirectory()
-    {
-        this.path = path.join(this.manager.tmpdir, this.mergeCommit.sha.substr(12));
-        if (fs.existsSync(this.path))
-            fs.removeSync(this.path);
-        fs.mkdirSync(this.path);
-        this.solutionPath = path.join(this.path, this.studentDirectory);
-    }
     // Returns a Promise
-    /* async */ download()
+    async download()
     {
-        return new Promise((resolve, reject) => {
-            let git_clone = child_process.spawn('git', ['clone', this.pullRequest.head.repo.git_url, this.solutionPath])
-            let resolved = false;
-            git_clone.on('exit', (code) => {
-                if (resolved)
-                    return;
-                resolve();
-                resolved = true;
-            });
-            git_clone.on('error', (error) => {
-                if (resolved)
-                    return;
-                reject();
-                resolved = true;
-            });
-
+        let status = await asyncSpawn('git', ['fetch', 'origin', `pull/${this.pullRequestNumber}/merge:pr-${this.pullRequestNumber}`], {
+            cwd: this.manager.tmpdir
         });
+
+        if (status != 0)
+            throw new Error(`Failed to fetch merge for pull request ${this.pullRequestNumber}`);
+
+        status = await asyncSpawn('git', ['checkout', `pr-${this.pullRequestNumber}`], {
+            cwd: this.manager.tmpdir
+        });
+
+        if (status != 0)
+            throw new Error(`Failed to checkout merge for pull request ${this.pullRequestNumber}`);
     }
     // Compares it with the master repo (only changed folder MUST be user's own folder)
     // Will throw if it's not true
     checkDelta()
     {
-        for (let file of this.mergeCommit.files)
+        for (let file of this.mergeCommit.data.files)
         {
-            if (file.indexOf(this.studentDirectory + '/') !== 0)
+            if (file.filename.indexOf(this.studentDirectory + '/') !== 0)
                 throw new Error(`You can't modify files outside ${this.studentDirectory}/`);
         }
     }

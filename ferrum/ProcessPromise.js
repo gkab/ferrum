@@ -3,6 +3,7 @@ const child_process = require('child_process');
 module.exports = {
     asyncSpawn: async function asyncSpawn(command, args, options, ostream, estream)
     {
+        console.log('DEBUG:', command, args, options);
         return new Promise((resolve, reject) => {
             let proc = child_process.spawn(command, args, options);
             let done = false;
