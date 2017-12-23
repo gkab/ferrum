@@ -45,8 +45,7 @@ router.delete('/:id', null);
 router.get('/:id/:field', null);
 router.put('/:id/:field', null);
 
-router.put('/:id/build/start', null);
-router.get('/:id/build/status', null);
-router.get('/:id/build/result', null);
+router.put('/:id/build', null);
+router.put('/:id/build/:student', null);
 
 module.exports = router;

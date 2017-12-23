@@ -1,18 +1,18 @@
-class TaskQueue
+class JobQueue
 {
     constructor()
     {
         this.current = 0;
-        this.tasks = {};
+        this.jobs = {};
         this.queue = [];
         this.nextID = 1;
     }
-    push(task)
+    push(job)
     {
         const id = this.nextID;
         this.nextID++;
-        task.setID(id);
-        this.tasks[id] = task;
+        job.setID(id);
+        this.jobs[id] = job;
         this.queue.push(id);
         if (this.current == 0)
             this.next();
@@ -27,15 +27,15 @@ class TaskQueue
         };
         if (this.current !== 0)
         {
-            result.taskStatus = this.tasks[this.current].status();
+            result.jobStatus = this.jobs[this.current].status();
         }
         return result;
     }
-    taskStatus(id)
+    jobStatus(id)
     {
-        if (this.tasks[id])
+        if (this.jobs[id])
         {
-            return this.tasks[id].status();
+            return this.jobs[id].status();
         }
         return null;
     }
@@ -45,20 +45,20 @@ class TaskQueue
     }
     next()
     {
-        if (task.queue.length)
+        if (this.queue.length)
         {
-            this.current = task.queue.shift();
-            this.tasks[this.current].start();
+            this.current = this.queue.shift();
+            this.jobs[this.current].start();
         }
         else
         {
             this.current = 0;
         }
     }
-    onTaskDone(id)
+    onJobDone(id)
     {
         this.next();
     }
 }
 
-module.exports = TaskQueue;
+module.exports = JobQueue;

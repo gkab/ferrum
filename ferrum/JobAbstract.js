@@ -1,6 +1,6 @@
 const { AbstractMethodCall } = require('./Builtin');
 
-class QueuedTaskAbstract
+class JobAbstract
 {
     constructor()
     {
@@ -20,4 +20,4 @@ class QueuedTaskAbstract
     }
 }
 
-module.exports = QueuedTask;
+module.exports = JobAbstract;
