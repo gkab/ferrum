@@ -5,18 +5,12 @@ const { NotImplementedMethodCall } = require('./Builtin');
 const { diffGenerate } = require('./DiffHelper');
 const config = require('../config/config');
 const { asyncSpawn } = require('./ProcessPromise');
+const Ferrum = require('./Ferrum');
 
 const fs = require('fs-extra');
 const os = require('os');
 const git = require('git-promise');
 const path = require('path');
-
-/*
-    Right now everything is stored in /tmp folders
-    That includes master repo and all downloaded student repos
-
-    This can be optimized later by using `git checkout`, etc
-*/
 
 class SolutionManager
 {
@@ -35,6 +29,10 @@ class SolutionManager
         let status = await asyncSpawn('git', ['clone', `https://github.com/${config.githubRepoOwner}/${this.repo}`, this.tmpdir]);
         if (status != 0)
             throw new Error(`git exited with status ${status}`);
+    }
+    async fetchSolutions()
+    {
+        let prs = Ferrum.github.pullRequests.get();
     }
     async processStudentSolution(pullRequestID, streamStdout, streamStderr)
     {

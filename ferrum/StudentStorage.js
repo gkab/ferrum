@@ -14,27 +14,39 @@ class StudentStorage
     constructor()
     {
         let adapter = new FileSync('data/students.json');
-        this.students = low(adapter);
-        this.students.defaults({ students: [] }).write();
+        this.db = low(adapter);
+        this.db.defaults({ students: [] }).write();
      }
     createStudent(username, workingDirectory)
     {
-        if (this.studentExists(username))
-            throw new Error('Student already exists');
-        this.students.get('students').push({
+        this.db.get('students').push({
             username: username,
             workingDirectory: workingDirectory
         }).write();
+        console.log('created student', username);
+    }
+    deleteStudent(username)
+    {
+        this.db.get('students').remove((student) => {
+            return student.username == username;
+        }).write();
+        console.log('deleted student', username);
     }
     studentExists(username)
     {
-        return this.students.get('students').find({ username: username }).value();
+        return this.db.get('students').find({ username: username }).value();
     }
     // Returns a StudentAccessor
     getStudent(username)
     {
-        // TODO
-        return new StudentAccessor(this, username);
+        try
+        {
+            return new StudentAccessor(this, username);
+        }
+        catch (e)
+        {
+            return null;
+        }
     }
 }
 

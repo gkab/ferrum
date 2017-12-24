@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 class JobQueue
 {
     constructor()
@@ -30,6 +32,17 @@ class JobQueue
             result.jobStatus = this.jobs[this.current].status();
         }
         return result;
+    }
+    cancel(id)
+    {
+        if (id == this.current)
+            throw new Error('cannot cancel running job');
+        if (this.jobs[id])
+        {
+            _.remove(this.queue, n => n == id);
+        }
+        else
+            throw new Error(`no job with id ${id}`);
     }
     jobStatus(id)
     {

@@ -1,9 +1,11 @@
 const bodyparser = require('body-parser');
 const Promise = require('promise');
+const express = require('express');
 const path = require('path');
 
 const routeStudent = require('./route/student');
 const routeTask = require('./route/task');
+const routeJob = require('./route/job');
 
 module.exports = (app) =>
 {
@@ -13,4 +15,5 @@ module.exports = (app) =>
 
     app.use('/api/student', routeStudent);
     app.use('/api/task', routeTask);
+    app.use('/api/job', routeJob);
 }
