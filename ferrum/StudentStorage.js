@@ -3,6 +3,7 @@ const { NotImplementedMethodCall } = require('./Builtin');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const Promise = require('promise');
+const tassert = require('assert-types');
 
 const BadRequestError = require('./errors/BadRequestError');
 const NotFoundError = require('./errors/NotFoundError');
@@ -42,6 +43,7 @@ class StudentStorage
         }
         catch (error)
         {
+            console.log(error);
             throw new BadRequestError();
         }
 

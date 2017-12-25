@@ -26,6 +26,7 @@
     "git-promise": "^0.3.1",
     "github": "^13.0.1",
     "lowdb": "^1.0.0",
+    "memory-streams": "^0.1.2",
     "promise": "^8.0.1",
     "randomstring": "^1.1.5",
     "sha1-file": "^1.0.0",

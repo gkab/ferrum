@@ -46,6 +46,18 @@ class TaskManager
 
         return task;
     }
+    async update(id)
+    {
+        let task = this.get(id);
+
+        if (!this.solutionManagers[id])
+        {
+            this.solutionManagers[id] = new SolutionManager(id, task.repo);
+            await this.solutionManagers[id].init();
+        }
+
+        await this.solutionManagers[id].fetchSolutions();
+    }
     create(id, options)
     {
         try

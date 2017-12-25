@@ -1,6 +1,6 @@
 const JobAbstract = require('./JobAbstract');
 const Ferrum = require('./Ferrum');
-const stream = require('stream');
+const stream = require('memory-streams');
 
 class JobBuildSolution extends JobAbstract
 {
@@ -19,17 +19,14 @@ class JobBuildSolution extends JobAbstract
 
         try
         {
-            const outStream = stream.Writable();
-            const errStream = stream.Writable();
-
-            outStream._write = (chunk) => {
-                this.status.stdout += chunk.toString();
-            };
-            errStream._write = (chunk) => {
-                this.status.stderr += chunk.toString();
-            };
+            const outStream = new stream.WritableStream();
+            const errStream = new stream.WritableStream();
 
             await sman.processStudentSolution(this.username, outStream, errStream);
+
+            status.stdout = outStream.toString();
+            status.stderr = errStream.toString();
+            status.success = true;
         }
         catch (error)
         {

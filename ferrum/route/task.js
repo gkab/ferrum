@@ -33,5 +33,9 @@ router.put('/:id/build/:student', (req, res) => {
         job: job
     }).end();
 });
+router.put('/:id/update', wrap(async (req, res) => {
+    await Ferrum.taskManager.update(req.params.id);
+    res.status(200).end();
+}));
 
 module.exports = router;

@@ -9,9 +9,9 @@ module.exports = {
             let done = false;
 
             if (ostream)
-                process.stdout.pipe(ostream);
+                proc.stdout.pipe(ostream);
             if (estream)
-                process.stderr.pipe(estream);
+                proc.stderr.pipe(estream);
 
             proc.on('error', (error) => {
                 if (done)

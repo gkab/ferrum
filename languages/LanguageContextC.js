@@ -40,10 +40,9 @@ class LanguageContextC extends LanguageContextAbstract
         let result = [];
         for (let i of sources)
         {
-            i = path.join(this.cwd, i);
             if (path.extname(i) != '.c')
                 throw new Error(`Source file does not have .c extension: ${i}`);
-            if (!fs.existsSync(i))
+            if (!fs.existsSync(path.join(this.cwd, i)))
                 throw new Error(`Source file does not exist: ${i}`);
             result.push(i);
         }
@@ -67,7 +66,7 @@ class LanguageContextC extends LanguageContextAbstract
         let object = this.getObjectPath(source);
 
         let status = await asyncSpawn(this.config.cc, this.cflags.concat([source, '-c', '-o', object]), {
-            cwd: this.buildPath
+            cwd: this.cwd
         }, this.streamStdout, this.streamStderr);
 
         if (status != 0)

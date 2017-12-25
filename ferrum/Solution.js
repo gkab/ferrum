@@ -20,11 +20,6 @@ class Solution
         this.manager = manager;
         this.pullRequestNumber = pullRequestNumber;
 
-        // Can throw (student is not registered)
-        // this.studentDirectory = Ferrum.studentStorage.getStudent(username).workingDirectory;
-        this.studentDirectory = 'FerrumStudent';
-        this.solutionPath = path.join(this.manager.tmpdir, this.studentDirectory);
-
         this.buildConfig = null;
         this.builder = null;
     }
@@ -48,6 +43,8 @@ class Solution
             username: this.pullRequest.data.user.login,
             reponame: this.pullRequest.data.head.repo.name
         };
+        this.studentDirectory = Ferrum.studentStorage.get(this.info.username).workingDirectory;
+        this.solutionPath = path.join(this.manager.tmpdir, this.studentDirectory);
     }
     // Returns a Promise
     async download()
