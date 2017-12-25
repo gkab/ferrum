@@ -1,19 +1,3 @@
-/*
-
-GET     / - returns array of all registered students
-GET     /:name - returns info about a student
-
-POST    /:name - creates a student
-    workingDirectory: string
-
-DELETE  /:name - deletes a student
-GET     /:name/:property - returns student data
-    property: workingDirectory
-PUT     /:name/:property - updates student data
-    property: workingDirectory
-
-*/
-
 const router = require('express').Router();
 const wrap = require('async-middleware').wrap;
 const Ferrum = require('../Ferrum');
