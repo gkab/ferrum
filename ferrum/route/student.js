@@ -17,7 +17,8 @@ router.delete('/:name', (req, res) => {
     res.status(200).end();
 });
 router.put('/:name', (req, res) => {
-    // TODO update student data
+    Ferrum.studentStorage.put(req.params.name, req.body);
+    res.status(200).end();
 });
 
 module.exports = router;

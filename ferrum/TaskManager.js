@@ -87,6 +87,24 @@ class TaskManager
             return task.id == id;
         }).write();
     }
+    put(id, data)
+    {
+        let chain = this.db.get('tasks').find({ id: id });
+        let task = chain.value();
+
+        if (!task)
+            throw new NotFoundError();
+
+        for (let i in data)
+        {
+            if (task.hasOwnProperty(i))
+                task[i] = data[i];
+            else
+                throw new BadRequestError(`Cannot create property ${i}`);
+        }
+
+        chain.write();
+    }
     buildAll(id)
     {
         let task = this.get(id);

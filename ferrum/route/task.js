@@ -19,7 +19,8 @@ router.delete('/:id', (req, res) => {
     res.status(200).end();
 });
 router.put('/:id', (req, res) => {
-    // TODO update task data
+    Ferrum.taskManager.put(req.params.id, req.body);
+    res.status(200).end();
 });
 router.put('/:id/build', (req, res) => {
     let job = Ferrum.taskManager.buildAll(req.params.id);

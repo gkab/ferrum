@@ -67,6 +67,24 @@ class StudentStorage
 
         console.log('deleted student', username);
     }
+    put(username, data)
+    {
+        let chain = this.db.get('students').find({ username: username });
+        let student = chain.value();
+
+        if (!student)
+            throw new NotFoundError();
+
+        for (let i in data)
+        {
+            if (student.hasOwnProperty(i))
+                student[i] = data[i];
+            else
+                throw new BadRequestError(`Cannot create property ${i}`);
+        }
+
+        chain.write();
+    }
     studentExists(username)
     {
         return this.db.get('students').find({ username: username }).value();
