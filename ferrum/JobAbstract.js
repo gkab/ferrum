@@ -1,10 +1,18 @@
 const { AbstractMethodCall } = require('./Builtin');
+const Ferrum = require('./Ferrum');
 
 class JobAbstract
 {
     constructor()
     {
-        AbstractMethodCall();
+        this.id = 0;
+        this.status = {
+            state: 'init'
+        };
+    }
+    enterState(state)
+    {
+        this.status.state = state;
     }
     setID(id)
     {
@@ -14,9 +22,13 @@ class JobAbstract
     {
         AbstractMethodCall();
     }
-    status()
+    getStatus()
     {
-        AbstractMethodCall();
+        return this.status;
+    }
+    done()
+    {
+        Ferrum.jobQueue.onJobDone(this.id);
     }
 }
 

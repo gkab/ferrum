@@ -1,13 +1,14 @@
 const { NotImplementedMethodCall } = require('./Builtin');
+const NotFoundError = require('./errors/NotFoundError');
 
-class StudentAccessor
+class Student
 {
     constructor(studentStorage, username)
     {
         this.studentStorage = studentStorage;
         if (!this.data())
         {
-            throw new Error(`Student ${username} does not exist`);
+            throw new NotFoundError(`Student '${username}' does not exist`);
         }
     }
     chain()
@@ -35,3 +36,5 @@ class StudentAccessor
         NotImplementedMethodCall();
     }
 }
+
+module.exports = Student;

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Ferrum = require('./Ferrum');
 
 class JobQueue
 {
@@ -16,9 +17,20 @@ class JobQueue
         job.setID(id);
         this.jobs[id] = job;
         this.queue.push(id);
+        Ferrum.logger.info(`Pushed a new job "${job.constructor.name}" with ID ${id}`);
         if (this.current == 0)
             this.next();
         return id;
+    }
+    filter(fn)
+    {
+        let filtered = [];
+        for (let i of this.queue)
+        {
+            if (fn(this.jobs(i)))
+                filtered.push(i);
+        }
+        return filtered;
     }
     status()
     {
@@ -48,7 +60,7 @@ class JobQueue
     {
         if (this.jobs[id])
         {
-            return this.jobs[id].status();
+            return this.jobs[id].getStatus();
         }
         return null;
     }
@@ -58,9 +70,12 @@ class JobQueue
     }
     next()
     {
+        Ferrum.logger.debug(`Ready to execute next job`);
         if (this.queue.length)
         {
             this.current = this.queue.shift();
+            let job = this.jobs[this.current];
+            Ferrum.logger.info(`Making job "${job.constructor.name}" with ID ${this.current} current`);
             this.jobs[this.current].start();
         }
         else
@@ -70,6 +85,7 @@ class JobQueue
     }
     onJobDone(id)
     {
+        Ferrum.logger.info(`Job "${this.jobs[id].constructor.name}" with ID ${this.current} is done`);
         this.next();
     }
 }

@@ -6,9 +6,13 @@ const path = require('path');
 const routeStudent = require('./route/student');
 const routeTask = require('./route/task');
 const routeJob = require('./route/job');
+const errorHandler = require('./ErrorHandler');
+const Ferrum = require('./Ferrum');
 
 module.exports = (app) =>
 {
+    Ferrum.logger.info('Initializing app');
+
     app.use(express.static(path.join(__dirname, 'public')));
     app.use(bodyparser.json());
     app.use(bodyparser.urlencoded({ extended: true }));
@@ -16,4 +20,5 @@ module.exports = (app) =>
     app.use('/api/student', routeStudent);
     app.use('/api/task', routeTask);
     app.use('/api/job', routeJob);
+    app.use(errorHandler);
 }

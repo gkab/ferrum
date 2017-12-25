@@ -7,6 +7,10 @@ const config = require('../config/config');
 const { asyncSpawn } = require('./ProcessPromise');
 const Ferrum = require('./Ferrum');
 
+const AlreadyExistsError = require('./errors/AlreadyExistsError');
+const NotFoundError = require('./errors/NotFoundError');
+const BadRequestError = require('./errors/BadRequestError');
+
 const fs = require('fs-extra');
 const os = require('os');
 const git = require('git-promise');
@@ -23,6 +27,7 @@ class SolutionManager
         fs.emptyDirSync(this.tmpdir);
 
         this.repo = repo;
+        this.solutions = {};
     }
     async init()
     {
@@ -32,13 +37,36 @@ class SolutionManager
     }
     async fetchSolutions()
     {
-        let prs = Ferrum.github.pullRequests.get();
+        let prs = await Ferrum.github.pullRequests.getAll({
+            owner: config.githubRepoOwner,
+            repo: this.repo
+        });
+
+        let solutions = {};
+
+        for (let i of prs.data)
+        {
+            if (!solutions[i.user.login] || solutions[i.user.login].number < i.number)
+            {
+                solutions[i.user.login] = {
+                    number: i.number
+                };
+            }
+        }
+        this.solutions = solutions;
+
+        return solutions;
     }
-    async processStudentSolution(pullRequestID, streamStdout, streamStderr)
+    async processStudentSolution(username, streamStdout, streamStderr)
     {
+        if (!this.solutions[username])
+            throw new NotFoundError(`No solution for ${username}`);
+
+        const number = this.solutions[username].number;
+
         try
         {
-            let solution = new Solution(this, pullRequestID);
+            const solution = new Solution(this, number);
             await solution.fetchInformation();
             await solution.download();
             solution.checkDelta();
