@@ -25,9 +25,9 @@ class JobQueue
     filter(fn)
     {
         let filtered = [];
-        for (let i of this.queue)
+        for (let i of this.queue.concat(this.current))
         {
-            if (fn(this.jobs(i)))
+            if (fn(this.jobs[i]))
                 filtered.push(i);
         }
         return filtered;

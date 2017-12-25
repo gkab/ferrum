@@ -21,6 +21,7 @@ class SolutionManager
     constructor(taskID, repo)
     {
         this.taskID = '' + taskID;
+        Ferrum.logger.debug(`Creating SolutionManager for ${this.taskID}`)
 
         this.tmpdir = path.join(os.tmpdir(), 'ferrum-solutions', this.taskID);
 
@@ -31,9 +32,15 @@ class SolutionManager
     }
     async init()
     {
-        let status = await asyncSpawn('git', ['clone', `https://github.com/${config.githubRepoOwner}/${this.repo}`, this.tmpdir]);
+        let status = await asyncSpawn('git', ['clone', `https://github.com/${config.githubRepoOwner}/${this.repo}`, this.tmpdir], undefined, process.stdout, process.stderr);
         if (status != 0)
             throw new Error(`git exited with status ${status}`);
+    }
+    async cleanup()
+    {
+        await asyncSpawn('git', ['checkout', 'master'], {
+            cwd: this.tmpdir
+        });
     }
     async fetchSolutions()
     {
@@ -66,6 +73,7 @@ class SolutionManager
 
         try
         {
+            await this.cleanup();
             const solution = new Solution(this, number);
             await solution.fetchInformation();
             await solution.download();
@@ -81,10 +89,6 @@ class SolutionManager
 
         // Tries to build the solution
         // Deletes local clone of the student's repo
-    }
-    cleanup()
-    {
-        fs.removeSync(this.tmpdir);
     }
 }
 

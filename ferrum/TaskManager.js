@@ -102,7 +102,7 @@ class TaskManager
 
         if (existingJobs.length)
         {
-            return existingJobs[0].id;
+            return existingJobs[0];
         }
         else
         {
